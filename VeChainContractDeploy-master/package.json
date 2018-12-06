@@ -1,0 +1,20 @@
+{
+  "name": "examplethorify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node index.ts",
+    "deploy": "ts-node src/deployContract.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.1.2",
+    "thor-model-kit": "^0.2.0",
+    "thorify": "^1.0.4",
+    "ts-node": "^6.0.3",
+    "typescript": "^2.8.3",
+    "web3": "^1.0.0-beta.34"
+  }
+}

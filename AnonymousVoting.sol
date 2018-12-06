@@ -543,8 +543,7 @@ contract AnonymousVoting is owned {
   }
 
   // Owner of contract sets a whitelist of addresses that are eligible to vote.
-  function setEligible(address[] addr) onlyOwner {
-
+  function setEligible(address[] addr) onlyOwner returns (uint ans) {
     // We can only handle up 50 people at the moment.
     if(totaleligible > 50) {
       throw;
@@ -552,13 +551,22 @@ contract AnonymousVoting is owned {
 
     // Sign up the addresses
     for(uint i=0; i<addr.length; i++) {
-
       if(!eligible[addr[i]]) {
         eligible[addr[i]] = true;
         addresses.push(addr[i]);
         totaleligible += 1;
       }
     }
+
+    // @starshine87
+    ans = addresses.length;
+    return;
+  }
+  
+  // @starshine87
+  function getEligible() onlyOwner returns (address[] ans) {
+      ans = addresses;
+      return;
   }
 
   // Owner of contract declares that eligible addresses begin round 1 of the protocol
