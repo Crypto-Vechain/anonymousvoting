@@ -463,6 +463,20 @@ contract LocalCrypto {
     Y[1] = Yy;
   }
 
+  // @starshine87 tools
+  function getMul(uint x) returns (uint[2] ans) {
+      uint[2] memory G;
+      G[0] = Gx;
+      G[1] = Gy;
+      uint[3] memory tmp = Secp256k1_noconflict._mul(x, G);
+      ECCMath_noconflict.toZ1(tmp, pp);
+      ans[0] = tmp[0];
+      ans[1] = tmp[1];
+      //ans[0] = G[0];
+      //ans[1] = G[1];
+      return;
+  }
+
   // Retrieve the commitment hash for a voters vote.
   function commitToVote(uint[4] params, uint[2] xG, uint[2] yG, uint[2] y, uint[2] a1, uint[2] b1, uint[2] a2, uint[2] b2) returns (bytes32) {
     return sha3(msg.sender, params, xG, yG, y, a1, b1, a2, b2);
