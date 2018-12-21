@@ -559,8 +559,7 @@ contract AnonymousVoting is owned {
     }
 
     // @starshine87
-    ans = addresses.length;
-    return;
+    return totaleligible;
   }
   
   // @starshine87
@@ -653,6 +652,12 @@ contract AnonymousVoting is owned {
     }
 
     return false;
+  }
+  
+  // @starshine87
+  function getQuestion() onlyOwner returns (string ans) {
+      ans = question;
+      return;
   }
 
   // This function determines if one of the deadlines have been missed
@@ -789,20 +794,23 @@ contract AnonymousVoting is owned {
 
   // Called by participants to register their voting public key
   // Participant mut be eligible, and can only register the first key sent key.
-  function register(uint[2] xG, uint[3] vG, uint r) inState(State.SIGNUP) payable returns (bool) {
+  function register(uint[2] xG, uint[3] vG, uint r) inState(State.SIGNUP) payable returns (string ans) {
 
      // HARD DEADLINE
-     if(block.timestamp > finishSignupPhase) {
-       throw; // throw returns the voter's ether, but exhausts their gas.
-     }
+     // @starshine87
+     //if(block.timestamp > finishSignupPhase) {
+     //  throw; // throw returns the voter's ether, but exhausts their gas.
+     //}
 
     // Make sure the ether being deposited matches what we expect.
     if(msg.value != depositrequired) {
-      return false;
+      return "false";
     }
 
     // Only white-listed addresses can vote
     if(eligible[msg.sender]) {
+        if (!verifyZKP(xG, r, vG)) return "not zkp";
+        if (registered[msg.sender]) return "already";
         if(verifyZKP(xG,r,vG) && !registered[msg.sender]) {
 
             // Store deposit
@@ -815,34 +823,34 @@ contract AnonymousVoting is owned {
             registered[msg.sender] = true;
             totalregistered += 1;
 
-            return true;
+            return "yes";
         }
     }
 
-    return false;
+    return "not eligable";
   }
 
 
   // Timer has expired - we want to start computing the reconstructed keys
-  function finishRegistrationPhase() inState(State.SIGNUP) onlyOwner returns(bool) {
+  function finishRegistrationPhase() inState(State.SIGNUP) onlyOwner returns(string) {
 
 
       // Make sure at least 3 people have signed up...
       if(totalregistered < 3) {
-        return;
+        return "too small amount of people";
       }
 
       // We can only compute the public keys once participants
       // have been given an opportunity to register their
       // voting public key.
-      if(block.timestamp < finishSignupPhase) {
-        return;
-      }
+    //   if(block.timestamp < finishSignupPhase) {
+    //     return;
+    //   }
 
       // Election Authority has a deadline to begin election
-      if(block.timestamp > endSignupPhase) {
-        return;
-      }
+    //   if(block.timestamp > endSignupPhase) {
+    //     return;
+    //   }
 
       uint[2] memory temp;
       uint[3] memory yG;
@@ -911,6 +919,8 @@ contract AnonymousVoting is owned {
       } else {
         state = State.VOTE;
       }
+      
+      return "success";
   }
 
   /*
@@ -928,9 +938,10 @@ contract AnonymousVoting is owned {
   function submitCommitment(bytes32 h) inState(State.COMMITMENT) {
 
      //All voters have a deadline to send their commitment
-     if(block.timestamp > endCommitmentPhase) {
-       return;
-     }
+     // @starshine87
+     //if(block.timestamp > endCommitmentPhase) {
+     //  return;
+     //}
 
     if(!commitment[msg.sender]) {
         commitment[msg.sender] = true;
@@ -949,9 +960,10 @@ contract AnonymousVoting is owned {
   function submitVote(uint[4] params, uint[2] y, uint[2] a1, uint[2] b1, uint[2] a2, uint[2] b2) inState(State.VOTE) returns (bool) {
 
      // HARD DEADLINE
-     if(block.timestamp > endVotingPhase) {
-       return;
-     }
+     // @starshine87
+     //if(block.timestamp > endVotingPhase) {
+     //  return;
+     //}
 
      uint c = addressid[msg.sender];
 
@@ -1119,6 +1131,11 @@ contract AnonymousVoting is owned {
          }
          return;
       }
+  }
+  
+  function getFinalTally() returns (uint ans) {
+      ans = finaltally[0];
+      return;
   }
 
   // There are two reasons why we might be in a finished state
