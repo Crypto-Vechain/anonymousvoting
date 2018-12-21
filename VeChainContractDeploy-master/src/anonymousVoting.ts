@@ -104,11 +104,11 @@ async function ran() {
     // })
 
     // check voter information
-    // anonymousVoting.methods.getVoter()
-    // .call({from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'})
-    // .then(function(result: any) {
-    //     console.log('call result: ' + result[1]);
-    // })
+    anonymousVoting.methods.getVoter()
+    .call({from: '0x733b7269443c70de16bbf9b061530788bcc5636'})
+    .then(function(result: any) {
+        console.log('call result: ' + result[0]);
+    })
 
     // finish registration, calculate reconstruction key
     // anonymousVoting.methods.finishRegistrationPhase()
@@ -205,12 +205,12 @@ async function ran() {
     //     else console.log('error', error);
     // })
 
-    anonymousVoting.methods.getFinalTally()
-        .call({ from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed" })
-        .then(function (result: any, error: any) {
-            if (!error) console.log('final result: ' + result);
-            else console.log('error', error);
-        })
+    // anonymousVoting.methods.getFinalTally()
+    //     .call({ from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed" })
+    //     .then(function (result: any, error: any) {
+    //         if (!error) console.log('final result: ' + result);
+    //         else console.log('error', error);
+    //     })
 }
 
 ran()
